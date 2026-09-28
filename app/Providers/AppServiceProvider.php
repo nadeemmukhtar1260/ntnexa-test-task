@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\LeadNotifier;
+use App\Services\Notifications\MockLeadNotifier;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Swap this binding for a real WhatsApp/SMS implementation in production.
+        $this->app->bind(LeadNotifier::class, MockLeadNotifier::class);
     }
 
     /**

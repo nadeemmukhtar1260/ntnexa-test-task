@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\LeadController;
+use App\Http\Controllers\Api\LeadWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,3 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('leads', LeadController::class);
 });
 
+// Inbound webhook for external lead sources (HMAC-signed, no user token).
+Route::post('/webhooks/leads', LeadWebhookController::class)
+    ->middleware(['webhook.signature', 'throttle:60,1'])
+    ->name('webhooks.leads');
