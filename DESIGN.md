@@ -1,0 +1,6 @@
+# Design Note
+
+- **Sanctum** provides simple, first-party, database-backed personal access tokens, which fits a stateless REST API that does not need a full OAuth2 server (Passport); tokens can be revoked individually on logout.
+- **Separation of concerns:** Form Requests own validation (with shared `LeadRules` so create/update/webhook never drift), API Resources control exactly which fields are exposed, and a single `ApiResponse` helper plus a central exception renderer keep every success and error response in the same JSON envelope — controllers stay thin.
+- **Notification abstraction:** the webhook flow depends only on the `LeadNotifier` interface; `MockLeadNotifier` just logs the message, and a real WhatsApp/SMS provider (Twilio, Meta WhatsApp Cloud API) can be plugged in by adding one class and changing one binding in `AppServiceProvider` — no controller changes. Webhooks are authenticated with an HMAC-SHA256 signature over the raw body.
+- **With more time:** queue the notification (with retries) instead of sending it inline, add webhook idempotency keys/timestamps against replay, lead ownership/policies per user or team, token expiry and abilities, and OpenAPI docs plus CI (Pint, PHPStan, tests).
